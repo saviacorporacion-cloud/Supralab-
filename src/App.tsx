@@ -303,6 +303,17 @@ export default function App() {
       `Por favor, confírmenme el pedido. ¡Gracias!`;
 
     const waUrl = `https://api.whatsapp.com/send?phone=${WA_NUMBER}&text=${encodeURIComponent(message)}`;
+    
+    // Track TikTok Pixel Event
+    if ((window as any).ttq) {
+      (window as any).ttq.track('CompletePayment', {
+        content_name: 'Masajeador Cervical Pro 3D',
+        quantity: formData.quantity,
+        value: formData.quantity * 79,
+        currency: 'PEN'
+      });
+    }
+
     window.open(waUrl, '_blank');
   };
 
@@ -314,6 +325,15 @@ export default function App() {
   const reviewsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    // Track TikTok Pixel ViewContent Event
+    if ((window as any).ttq) {
+      (window as any).ttq.track('ViewContent', {
+        content_name: 'Masajeador Cervical Pro 3D',
+        value: 79,
+        currency: 'PEN'
+      });
+    }
+
     // Auto-scroll main images every 4 seconds
     const imageInterval = setInterval(() => {
       if (sliderRef.current) {
