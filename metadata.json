@@ -1,0 +1,5 @@
+{
+  "name": "TikTok Landing Page",
+  "description": "A high-converting landing page optimized for TikTok sales with a WhatsApp order form.",
+  "requestFramePermissions": ["geolocation"]
+}
