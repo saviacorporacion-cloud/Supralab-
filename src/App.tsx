@@ -796,7 +796,7 @@ export default function App() {
             </div>
 
             <div>
-              <label className="block text-sm font-bold text-slate-300 mb-1">Dirección Exacta</label>
+              <label className="block text-sm font-bold text-slate-300 mb-1">Dirección Exacta <span className="text-rose-500">*</span></label>
               <input 
                 required
                 type="text" 
@@ -808,13 +808,13 @@ export default function App() {
             </div>
 
             <div>
-              <label className="block text-sm font-bold text-slate-300 mb-1">Ubicación (GPS o Dirección) <span className="text-rose-500">*</span></label>
+              <label className="block text-sm font-bold text-slate-300 mb-1">Coordenadas GPS o Link de Maps (Opcional)</label>
               <div className="space-y-3">
                 <button 
                   type="button"
                   onClick={handleGetLocation}
                   disabled={isLocating || locationSuccess}
-                  className={`w-full flex items-center justify-center gap-2 py-3 rounded-xl font-bold transition-colors ${locationSuccess ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/50' : 'bg-rose-600/20 text-rose-400 hover:bg-rose-600/30 border border-rose-500/50'}`}
+                  className={`w-full flex items-center justify-center gap-2 py-3 rounded-xl font-bold transition-colors ${locationSuccess ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/50' : 'bg-slate-800 text-slate-300 hover:bg-slate-700 border border-slate-700'}`}
                 >
                   {isLocating ? (
                     <span className="animate-pulse">Obteniendo ubicación...</span>
@@ -824,7 +824,7 @@ export default function App() {
                     </>
                   ) : (
                     <>
-                      <MapPin className="w-5 h-5" /> Compartir mi ubicación actual (Recomendado)
+                      <MapPin className="w-5 h-5" /> Compartir mi ubicación actual
                     </>
                   )}
                 </button>
@@ -833,14 +833,13 @@ export default function App() {
                     <div className="w-full border-t border-slate-800"></div>
                   </div>
                   <div className="relative flex justify-center text-xs">
-                    <span className="bg-slate-950 px-2 text-slate-500">O escribe tu dirección / pega un link de Maps</span>
+                    <span className="bg-slate-950 px-2 text-slate-500">O pega un link de Google Maps</span>
                   </div>
                 </div>
                 <input 
-                  required
                   type="text" 
                   className="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-shadow"
-                  placeholder="Ej. Av. Larco 123, Miraflores o Link de Google Maps"
+                  placeholder="Ej. https://maps.app.goo.gl/..."
                   value={formData.coordinates}
                   onChange={e => setFormData({...formData, coordinates: e.target.value})}
                 />
