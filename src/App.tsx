@@ -2,21 +2,6 @@ import { useState, useEffect, useRef, FormEvent, UIEvent } from 'react';
 import { motion } from 'motion/react';
 import { Star, CheckCircle2, Truck, ShieldCheck, Clock, ChevronRight, ChevronLeft, MapPin, User, ChevronDown, Flame } from 'lucide-react';
 
-const getNextDays = () => {
-  const days = [];
-  const today = new Date();
-  for (let i = 0; i < 3; i++) {
-    const d = new Date(today);
-    d.setDate(today.getDate() + i);
-    const dayName = d.toLocaleDateString('es-PE', { weekday: 'long' });
-    const dayNum = d.getDate();
-    const monthName = d.toLocaleDateString('es-PE', { month: 'long' });
-    const formatted = `${dayName.charAt(0).toUpperCase() + dayName.slice(1)} ${dayNum} de ${monthName}`;
-    days.push(formatted);
-  }
-  return days;
-};
-
 const PlatformIcon = ({ platform }: { platform: string }) => {
   if (platform === 'tiktok') {
     return (
@@ -163,7 +148,6 @@ const FloatingUrgencyIndicator = ({ scrollToForm }: { scrollToForm: () => void }
 
 export default function App() {
   const [currentImg, setCurrentImg] = useState(0);
-  const deliveryDays = getNextDays();
 
   const images = [
     "https://ae01.alicdn.com/kf/A994490424d3a47d7a5aeaac3cd04063aZ.jpg",
@@ -182,7 +166,6 @@ export default function App() {
     address: '',
     reference: '',
     coordinates: '',
-    deliveryDate: deliveryDays[0],
     deliveryTime: 'Mañana (9:00 AM - 1:00 PM)',
     quantity: '1'
   });
@@ -281,7 +264,7 @@ export default function App() {
     e.preventDefault();
 
     if (!formData.coordinates) {
-      alert("⚠️ Por favor, comparte tu ubicación GPS. Es obligatorio para poder realizar el envío a tu dirección exacta.");
+      alert("⚠️ Por favor, ingresa tu dirección o comparte tu ubicación GPS.");
       return;
     }
 
@@ -296,9 +279,8 @@ export default function App() {
       `🏙️ Ciudad: ${formData.city}\n` +
       `🏘️ Distrito: ${formData.district}\n` +
       `📍 Dirección: ${formData.address}\n` +
-      `🏠 Referencia: ${formData.reference}\n` +
-      (formData.coordinates ? `🗺️ Coordenadas GPS: ${formData.coordinates}\n` : '') +
-      `📅 Día de entrega: ${formData.deliveryDate}\n` +
+      `🗺️ Ubicación/Coordenadas: ${formData.coordinates}\n` +
+      (formData.reference ? `🏠 Referencia: ${formData.reference}\n` : '') +
       `⏰ Horario: ${formData.deliveryTime}\n\n` +
       `Por favor, confírmenme el pedido. ¡Gracias!`;
 
@@ -318,6 +300,13 @@ export default function App() {
   };
 
   const scrollToForm = () => {
+    if ((window as any).ttq) {
+      (window as any).ttq.track('InitiateCheckout', {
+        content_name: 'Masajeador Cervical Pro 3D',
+        value: 79,
+        currency: 'PEN'
+      });
+    }
     document.getElementById('order-form')?.scrollIntoView({ behavior: 'smooth' });
   };
 
@@ -807,21 +796,60 @@ export default function App() {
             </div>
 
             <div>
-              <label className="block text-sm font-bold text-slate-300 mb-1">Dirección exacta</label>
+              <label className="block text-sm font-bold text-slate-300 mb-1">Dirección Exacta</label>
               <input 
                 required
                 type="text" 
                 className="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-shadow"
-                placeholder="Av. Siempre Viva 123"
+                placeholder="Ej. Av. Larco 123, Dpto 402"
                 value={formData.address}
                 onChange={e => setFormData({...formData, address: e.target.value})}
               />
             </div>
 
             <div>
-              <label className="block text-sm font-bold text-slate-300 mb-1">Referencia</label>
+              <label className="block text-sm font-bold text-slate-300 mb-1">Ubicación (GPS o Dirección) <span className="text-rose-500">*</span></label>
+              <div className="space-y-3">
+                <button 
+                  type="button"
+                  onClick={handleGetLocation}
+                  disabled={isLocating || locationSuccess}
+                  className={`w-full flex items-center justify-center gap-2 py-3 rounded-xl font-bold transition-colors ${locationSuccess ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/50' : 'bg-rose-600/20 text-rose-400 hover:bg-rose-600/30 border border-rose-500/50'}`}
+                >
+                  {isLocating ? (
+                    <span className="animate-pulse">Obteniendo ubicación...</span>
+                  ) : locationSuccess ? (
+                    <>
+                      <CheckCircle2 className="w-5 h-5" /> Ubicación guardada
+                    </>
+                  ) : (
+                    <>
+                      <MapPin className="w-5 h-5" /> Compartir mi ubicación actual (Recomendado)
+                    </>
+                  )}
+                </button>
+                <div className="relative">
+                  <div className="absolute inset-0 flex items-center">
+                    <div className="w-full border-t border-slate-800"></div>
+                  </div>
+                  <div className="relative flex justify-center text-xs">
+                    <span className="bg-slate-950 px-2 text-slate-500">O escribe tu dirección / pega un link de Maps</span>
+                  </div>
+                </div>
+                <input 
+                  required
+                  type="text" 
+                  className="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-shadow"
+                  placeholder="Ej. Av. Larco 123, Miraflores o Link de Google Maps"
+                  value={formData.coordinates}
+                  onChange={e => setFormData({...formData, coordinates: e.target.value})}
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-bold text-slate-300 mb-1">Referencia (Opcional)</label>
               <input 
-                required
                 type="text" 
                 className="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-shadow"
                 placeholder="Frente al parque, casa verde"
@@ -831,55 +859,16 @@ export default function App() {
             </div>
 
             <div>
-              <label className="block text-sm font-bold text-slate-300 mb-1">Ubicación GPS <span className="text-rose-500">*</span> (Obligatorio para el envío)</label>
-              <button 
-                type="button"
-                onClick={handleGetLocation}
-                disabled={isLocating || locationSuccess}
-                className={`w-full flex items-center justify-center gap-2 py-3 rounded-xl font-bold transition-colors ${locationSuccess ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/50' : 'bg-rose-600/20 text-rose-400 hover:bg-rose-600/30 border border-rose-500/50'}`}
+              <label className="block text-sm font-bold text-slate-300 mb-1">Horario de entrega</label>
+              <select 
+                className="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-shadow"
+                value={formData.deliveryTime}
+                onChange={e => setFormData({...formData, deliveryTime: e.target.value})}
               >
-                {isLocating ? (
-                  <span className="animate-pulse">Obteniendo ubicación...</span>
-                ) : locationSuccess ? (
-                  <>
-                    <CheckCircle2 className="w-5 h-5" /> Ubicación guardada
-                  </>
-                ) : (
-                  <>
-                    <MapPin className="w-5 h-5" /> Compartir mi ubicación actual
-                  </>
-                )}
-              </button>
-              {!locationSuccess && (
-                <p className="text-rose-400 text-xs mt-1.5 font-medium">Requerido para confirmar tu pedido.</p>
-              )}
-            </div>
-
-            <div className="grid grid-cols-1 gap-4">
-              <div>
-                <label className="block text-sm font-bold text-slate-300 mb-1">Día de entrega</label>
-                <select 
-                  className="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-shadow"
-                  value={formData.deliveryDate}
-                  onChange={e => setFormData({...formData, deliveryDate: e.target.value})}
-                >
-                  {deliveryDays.map(day => (
-                    <option key={day} value={day}>{day}</option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-bold text-slate-300 mb-1">Horario de entrega</label>
-                <select 
-                  className="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-shadow"
-                  value={formData.deliveryTime}
-                  onChange={e => setFormData({...formData, deliveryTime: e.target.value})}
-                >
-                  <option value="Mañana (9:00 AM - 1:00 PM)">Mañana (9:00 AM - 1:00 PM)</option>
-                  <option value="Tarde (1:00 PM - 5:00 PM)">Tarde (1:00 PM - 5:00 PM)</option>
-                  <option value="Noche (5:00 PM - 9:00 PM)">Noche (5:00 PM - 9:00 PM)</option>
-                </select>
-              </div>
+                <option value="Mañana (9:00 AM - 1:00 PM)">Mañana (9:00 AM - 1:00 PM)</option>
+                <option value="Tarde (1:00 PM - 5:00 PM)">Tarde (1:00 PM - 5:00 PM)</option>
+                <option value="Noche (5:00 PM - 9:00 PM)">Noche (5:00 PM - 9:00 PM)</option>
+              </select>
             </div>
 
             <div>
