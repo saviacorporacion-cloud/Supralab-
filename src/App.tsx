@@ -289,6 +289,8 @@ export default function App() {
     // Track TikTok Pixel Event
     if ((window as any).ttq) {
       (window as any).ttq.track('CompletePayment', {
+        content_id: 'MCP-3D-001',
+        content_type: 'product',
         content_name: 'Masajeador Cervical Pro 3D',
         quantity: formData.quantity,
         value: formData.quantity * 79,
@@ -302,6 +304,8 @@ export default function App() {
   const scrollToForm = () => {
     if ((window as any).ttq) {
       (window as any).ttq.track('InitiateCheckout', {
+        content_id: 'MCP-3D-001',
+        content_type: 'product',
         content_name: 'Masajeador Cervical Pro 3D',
         value: 79,
         currency: 'PEN'
@@ -317,6 +321,8 @@ export default function App() {
     // Track TikTok Pixel ViewContent Event
     if ((window as any).ttq) {
       (window as any).ttq.track('ViewContent', {
+        content_id: 'MCP-3D-001',
+        content_type: 'product',
         content_name: 'Masajeador Cervical Pro 3D',
         value: 79,
         currency: 'PEN'
