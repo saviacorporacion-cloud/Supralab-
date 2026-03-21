@@ -165,14 +165,10 @@ export default function App() {
     district: '',
     address: '',
     reference: '',
-    coordinates: '',
     deliveryTime: 'Mañana (9:00 AM - 1:00 PM)',
     quantity: '1'
   });
 
-  const [isLocating, setIsLocating] = useState(false);
-  const [locationSuccess, setLocationSuccess] = useState(false);
-  const [locationError, setLocationError] = useState<string | null>(null);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   const reviews = [
@@ -238,44 +234,8 @@ export default function App() {
     }
   ];
 
-  const handleGetLocation = () => {
-    setIsLocating(true);
-    setLocationError(null);
-    if ("geolocation" in navigator) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setFormData(prev => ({
-            ...prev,
-            coordinates: `${position.coords.latitude},${position.coords.longitude}`
-          }));
-          setLocationSuccess(true);
-          setIsLocating(false);
-        },
-        (error) => {
-          let errorMessage = "No pudimos obtener tu ubicación. Por favor, escribe tu dirección o pega un link de Maps manualmente.";
-          if (error.code === 1) {
-            errorMessage = "Permiso denegado. Por favor, habilita la ubicación en tu navegador o pega un link de Maps.";
-          } else if (error.code === 3) {
-            errorMessage = "Tiempo de espera agotado. Intenta de nuevo o pega un link de Maps.";
-          }
-          setLocationError(errorMessage);
-          setIsLocating(false);
-        },
-        { timeout: 15000, enableHighAccuracy: false, maximumAge: 0 }
-      );
-    } else {
-      setLocationError("Tu navegador no soporta geolocalización. Por favor, escribe tu dirección manualmente.");
-      setIsLocating(false);
-    }
-  };
-
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-
-    if (!formData.coordinates) {
-      alert("⚠️ Por favor, ingresa tu dirección o comparte tu ubicación GPS.");
-      return;
-    }
 
     const WA_NUMBER = "51919749480"; 
     
@@ -288,7 +248,6 @@ export default function App() {
       `🏙️ Ciudad: ${formData.city}\n` +
       `🏘️ Distrito: ${formData.district}\n` +
       `📍 Dirección: ${formData.address}\n` +
-      `🗺️ Ubicación/Coordenadas: ${formData.coordinates}\n` +
       (formData.reference ? `🏠 Referencia: ${formData.reference}\n` : '') +
       `⏰ Horario: ${formData.deliveryTime}\n\n` +
       `Por favor, confírmenme el pedido. ¡Gracias!`;
@@ -823,48 +782,6 @@ export default function App() {
             </div>
 
             <div>
-              <label className="block text-sm font-bold text-slate-300 mb-1">Coordenadas GPS o Link de Maps (Opcional)</label>
-              <div className="space-y-3">
-                <button 
-                  type="button"
-                  onClick={handleGetLocation}
-                  disabled={isLocating || locationSuccess}
-                  className={`w-full flex items-center justify-center gap-2 py-3 rounded-xl font-bold transition-colors ${locationSuccess ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/50' : 'bg-slate-800 text-slate-300 hover:bg-slate-700 border border-slate-700'}`}
-                >
-                  {isLocating ? (
-                    <span className="animate-pulse">Obteniendo ubicación...</span>
-                  ) : locationSuccess ? (
-                    <>
-                      <CheckCircle2 className="w-5 h-5" /> Ubicación guardada
-                    </>
-                  ) : (
-                    <>
-                      <MapPin className="w-5 h-5" /> Compartir mi ubicación actual
-                    </>
-                  )}
-                </button>
-                {locationError && (
-                  <p className="text-rose-400 text-xs mt-1">{locationError}</p>
-                )}
-                <div className="relative">
-                  <div className="absolute inset-0 flex items-center">
-                    <div className="w-full border-t border-slate-800"></div>
-                  </div>
-                  <div className="relative flex justify-center text-xs">
-                    <span className="bg-slate-950 px-2 text-slate-500">O pega un link de Google Maps</span>
-                  </div>
-                </div>
-                <input 
-                  type="text" 
-                  className="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-shadow"
-                  placeholder="Ej. https://maps.app.goo.gl/..."
-                  value={formData.coordinates}
-                  onChange={e => setFormData({...formData, coordinates: e.target.value})}
-                />
-              </div>
-            </div>
-
-            <div>
               <label className="block text-sm font-bold text-slate-300 mb-1">Referencia (Opcional)</label>
               <input 
                 type="text" 
@@ -899,6 +816,13 @@ export default function App() {
                 <option value="2">2 Unidades - S/ 209.00 (Mejor Oferta)</option>
                 <option value="3">3 Unidades - S/ 299.00</option>
               </select>
+            </div>
+
+            <div className="bg-cyan-500/10 border border-cyan-500/30 rounded-xl p-4 flex items-start gap-3">
+              <MapPin className="w-5 h-5 text-cyan-400 shrink-0 mt-0.5" />
+              <p className="text-sm text-cyan-100">
+                Como último paso de confirmación, un asesor le pedirá su ubicación exacta en el mapa para la guía del transportista.
+              </p>
             </div>
 
             <button 
