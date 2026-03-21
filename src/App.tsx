@@ -172,6 +172,7 @@ export default function App() {
 
   const [isLocating, setIsLocating] = useState(false);
   const [locationSuccess, setLocationSuccess] = useState(false);
+  const [locationError, setLocationError] = useState<string | null>(null);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   const reviews = [
@@ -239,6 +240,7 @@ export default function App() {
 
   const handleGetLocation = () => {
     setIsLocating(true);
+    setLocationError(null);
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
@@ -250,12 +252,19 @@ export default function App() {
           setIsLocating(false);
         },
         (error) => {
-          alert("No pudimos obtener tu ubicación. Por favor, asegúrate de dar permisos a tu navegador.");
+          let errorMessage = "No pudimos obtener tu ubicación. Por favor, escribe tu dirección o pega un link de Maps manualmente.";
+          if (error.code === 1) {
+            errorMessage = "Permiso denegado. Por favor, habilita la ubicación en tu navegador o pega un link de Maps.";
+          } else if (error.code === 3) {
+            errorMessage = "Tiempo de espera agotado. Intenta de nuevo o pega un link de Maps.";
+          }
+          setLocationError(errorMessage);
           setIsLocating(false);
-        }
+        },
+        { timeout: 15000, enableHighAccuracy: false, maximumAge: 0 }
       );
     } else {
-      alert("Tu navegador no soporta geolocalización.");
+      setLocationError("Tu navegador no soporta geolocalización. Por favor, escribe tu dirección manualmente.");
       setIsLocating(false);
     }
   };
@@ -834,6 +843,9 @@ export default function App() {
                     </>
                   )}
                 </button>
+                {locationError && (
+                  <p className="text-rose-400 text-xs mt-1">{locationError}</p>
+                )}
                 <div className="relative">
                   <div className="absolute inset-0 flex items-center">
                     <div className="w-full border-t border-slate-800"></div>
