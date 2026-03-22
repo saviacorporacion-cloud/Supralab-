@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef, FormEvent, UIEvent } from 'react';
 import { motion } from 'motion/react';
 import { Star, CheckCircle2, Truck, ShieldCheck, Clock, ChevronRight, ChevronLeft, MapPin, User, ChevronDown, Flame } from 'lucide-react';
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 
 const PlatformIcon = ({ platform }: { platform: string }) => {
   if (platform === 'tiktok') {
@@ -170,6 +172,14 @@ export default function App() {
   });
 
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+
+  useEffect(() => {
+    AOS.init({
+      duration: 800,
+      once: true,
+      offset: 100,
+    });
+  }, []);
 
   const reviews = [
     {
@@ -357,7 +367,7 @@ export default function App() {
   return (
     <div className="min-h-screen bg-black font-sans text-white pb-24 selection:bg-[#FE2C55] selection:text-white">
       {/* Top Banner */}
-      <div className="bg-gradient-to-r from-[#FE2C55] via-[#ff2e5e] to-[#25F4EE] text-white text-center py-2.5 px-4 text-sm font-display font-bold tracking-widest uppercase animate-pulse shadow-md flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-3">
+      <div className="bg-gradient-to-r from-[#FE2C55] via-[#ff2e5e] to-[#25F4EE] text-white text-center py-2.5 px-4 text-[11px] sm:text-sm font-display font-bold tracking-widest uppercase animate-pulse shadow-md flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-3">
         <span>¡Envío Gratis a todo el Perú! 🇵🇪</span>
         <span className="bg-black/20 px-2 py-0.5 rounded-full text-[10px] sm:text-xs">🔥 ÚLTIMAS UNIDADES</span>
       </div>
@@ -408,53 +418,18 @@ export default function App() {
                 ))}
                 <span className="text-sm font-bold ml-2 text-zinc-300">+10,000 vendidos</span>
               </div>
-              <h1 className="text-3xl font-display font-black tracking-tight leading-tight mb-2 drop-shadow-lg">
+              <h1 className="text-2xl sm:text-3xl font-display font-black tracking-tight leading-tight mb-2 drop-shadow-lg">
                 Masajeador Cervical Pro 3D 🔥
               </h1>
-              <p className="text-zinc-300 font-medium drop-shadow-md text-lg">Alivio inmediato y relajación profunda 💆‍♂️</p>
+              <p className="text-zinc-300 font-medium drop-shadow-md text-base sm:text-lg">Alivio inmediato y relajación profunda 💆‍♂️</p>
             </div>
           </div>
         </section>
 
-        {/* Price & Urgency */}
-        <section className="p-6 bg-zinc-950">
-          <div className="flex items-end gap-3 mb-4">
-            <span className="text-5xl font-display font-black text-[#25F4EE] tracking-tighter drop-shadow-[0_0_15px_rgba(37,244,238,0.3)]">S/ 109.00</span>
-            <span className="text-xl text-zinc-500 line-through font-bold mb-1.5">S/ 218.00</span>
-            <span className="bg-[#FE2C55]/20 text-[#FE2C55] border border-[#FE2C55]/30 text-sm font-black px-2.5 py-1 rounded-md mb-2.5 uppercase tracking-wider">
-              -50%
-            </span>
-          </div>
 
-          <div className="mb-5">
-            <div className="flex justify-between text-xs font-bold text-[#FE2C55] mb-1.5 uppercase tracking-wider">
-              <span className="flex items-center gap-1"><Flame className="w-3.5 h-3.5" /> ¡Últimas unidades disponibles!</span>
-              <span>12 en stock</span>
-            </div>
-            <div className="w-full bg-zinc-800 rounded-full h-2.5 overflow-hidden border border-zinc-700">
-              <div className="bg-gradient-to-r from-[#FE2C55] to-[#ff2e5e] h-full rounded-full w-[85%] animate-pulse"></div>
-            </div>
-          </div>
-
-          <div className="bg-zinc-900 rounded-2xl p-4 flex items-center justify-between mb-6 shadow-lg border border-zinc-800">
-            <div className="flex items-center gap-2 text-white font-bold">
-              <Clock className="w-5 h-5 text-[#FE2C55] animate-pulse" />
-              <span>La oferta termina en:</span>
-            </div>
-            <CountdownTimer />
-          </div>
-
-          <button 
-            onClick={scrollToForm}
-            className="group relative w-full bg-[#FE2C55] text-white text-xl font-display font-black py-4 rounded-2xl shadow-[0_0_20px_rgba(254,44,85,0.4)] hover:shadow-[0_0_30px_rgba(254,44,85,0.6)] hover:-translate-y-1 active:scale-95 transition-all duration-300 flex items-center justify-center gap-2 uppercase tracking-wide overflow-hidden border border-white/20"
-          >
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out"></div>
-            <span className="relative z-10 flex items-center gap-2 drop-shadow-md">Comprar Ahora <ChevronRight className="w-6 h-6" /></span>
-          </button>
-        </section>
 
         {/* Trust Badges */}
-        <section className="py-6 px-4 grid grid-cols-2 gap-4 bg-zinc-900 border-y border-zinc-800">
+        <section className="py-6 px-4 grid grid-cols-2 gap-4 bg-zinc-900 border-y border-zinc-800" data-aos="fade-up">
           <div className="flex flex-col items-center text-center gap-2">
             <div className="bg-zinc-800 p-3 rounded-full shadow-inner text-[#25F4EE] border border-zinc-700">
               <Truck className="w-6 h-6" />
@@ -471,9 +446,20 @@ export default function App() {
           </div>
         </section>
 
+        {/* Call to Action Button */}
+        <section className="p-6 bg-zinc-950" data-aos="fade-up">
+          <button 
+            onClick={scrollToForm}
+            className="group relative w-full bg-[#FE2C55] text-white text-xl font-display font-black py-4 rounded-2xl shadow-[0_0_20px_rgba(254,44,85,0.4)] hover:shadow-[0_0_30px_rgba(254,44,85,0.6)] hover:-translate-y-1 active:scale-95 transition-all duration-300 flex items-center justify-center gap-2 uppercase tracking-wide overflow-hidden border border-white/20"
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out"></div>
+            <span className="relative z-10 flex items-center gap-2 drop-shadow-md">Comprar Ahora <ChevronRight className="w-6 h-6" /></span>
+          </button>
+        </section>
+
         {/* Features */}
-        <section className="px-6 py-10 bg-zinc-950">
-          <h2 className="text-3xl font-display font-black tracking-tight mb-8 text-center text-white leading-tight">Dile adiós al estrés y dolor 🚀</h2>
+        <section className="px-4 sm:px-6 py-8 sm:py-10 bg-zinc-950" data-aos="fade-up">
+          <h2 className="text-2xl sm:text-3xl font-display font-black tracking-tight mb-6 sm:mb-8 text-center text-white leading-tight">Dile adiós al estrés y dolor 🚀</h2>
           
           {/* Product Video */}
           <div className="mb-8 rounded-3xl overflow-hidden shadow-2xl border border-zinc-800 relative">
@@ -515,18 +501,18 @@ export default function App() {
         </section>
 
         {/* Image Showcase */}
-        <section className="py-12 bg-black border-t border-zinc-900">
+        <section className="py-12 bg-black border-t border-zinc-900" data-aos="fade-up">
           <div className="space-y-8 px-4 max-w-md mx-auto">
             
             {/* Uso Múltiple - Elementos Separados */}
             <div className="text-center mb-6 mt-4">
-              <h3 className="text-4xl font-display font-black tracking-tight text-white mb-2">Uso Múltiple</h3>
-              <p className="text-zinc-400 font-medium text-lg">Disfrútalo en todo tu cuerpo</p>
+              <h3 className="text-3xl sm:text-4xl font-display font-black tracking-tight text-white mb-2">Uso Múltiple</h3>
+              <p className="text-zinc-400 font-medium text-base sm:text-lg">Disfrútalo en todo tu cuerpo</p>
             </div>
 
             <div className="space-y-6">
               {/* Cuello */}
-              <div className="bg-zinc-900 rounded-3xl overflow-hidden shadow-2xl border border-zinc-800 relative group">
+              <div className="bg-zinc-900 rounded-3xl overflow-hidden shadow-2xl border border-zinc-800 relative group" data-aos="fade-up">
                 <img src="https://ae01.alicdn.com/kf/A994490424d3a47d7a5aeaac3cd04063aZ.jpg" alt="Cuello y Hombros" className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-700" referrerPolicy="no-referrer" />
                 <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black via-black/80 to-transparent p-6 pt-20">
                   <h4 className="text-2xl font-display font-black tracking-tight text-white drop-shadow-lg">Cuello y Hombros</h4>
@@ -534,7 +520,7 @@ export default function App() {
               </div>
 
               {/* Cintura */}
-              <div className="bg-zinc-900 rounded-3xl overflow-hidden shadow-2xl border border-zinc-800 relative group">
+              <div className="bg-zinc-900 rounded-3xl overflow-hidden shadow-2xl border border-zinc-800 relative group" data-aos="fade-up">
                 <img src="https://ae01.alicdn.com/kf/Ab5f7307e24404bf5b5fc9a72dbac5b4bk.jpg" alt="Cintura y Espalda" className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-700" referrerPolicy="no-referrer" />
                 <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black via-black/80 to-transparent p-6 pt-20">
                   <h4 className="text-2xl font-display font-black tracking-tight text-white drop-shadow-lg">Cintura y Espalda</h4>
@@ -542,7 +528,7 @@ export default function App() {
               </div>
 
               {/* Pantorrillas */}
-              <div className="bg-zinc-900 rounded-3xl overflow-hidden shadow-2xl border border-zinc-800 relative group">
+              <div className="bg-zinc-900 rounded-3xl overflow-hidden shadow-2xl border border-zinc-800 relative group" data-aos="fade-up">
                 <img src="https://ae01.alicdn.com/kf/A873008271bc44e3a9a150f7fd2c2ad99H.jpg" alt="Pantorrillas" className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-700" referrerPolicy="no-referrer" />
                 <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black via-black/80 to-transparent p-6 pt-20">
                   <h4 className="text-2xl font-display font-black tracking-tight text-white drop-shadow-lg">Pantorrillas</h4>
@@ -550,7 +536,7 @@ export default function App() {
               </div>
 
               {/* Muslos */}
-              <div className="bg-zinc-900 rounded-3xl overflow-hidden shadow-2xl border border-zinc-800 relative group">
+              <div className="bg-zinc-900 rounded-3xl overflow-hidden shadow-2xl border border-zinc-800 relative group" data-aos="fade-up">
                 <img src="https://ae01.alicdn.com/kf/A6c6cf5d04d5e4629a9a1cbba4c4fc64bD.jpg" alt="Muslos" className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-700" referrerPolicy="no-referrer" />
                 <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black via-black/80 to-transparent p-6 pt-20">
                   <h4 className="text-2xl font-display font-black tracking-tight text-white drop-shadow-lg">Muslos</h4>
@@ -560,12 +546,12 @@ export default function App() {
 
             {/* Alivia el Dolor - Elementos Separados */}
             <div className="text-center mb-6 mt-12">
-              <h3 className="text-4xl font-display font-black tracking-tight text-white mb-3 leading-tight">Alivia el Dolor,<br/>Mejora tu Vida</h3>
-              <p className="text-zinc-400 font-medium text-lg">Solución para cada molestia</p>
+              <h3 className="text-3xl sm:text-4xl font-display font-black tracking-tight text-white mb-3 leading-tight">Alivia el Dolor,<br/>Mejora tu Vida</h3>
+              <p className="text-zinc-400 font-medium text-base sm:text-lg">Solución para cada molestia</p>
             </div>
 
             <div className="space-y-4">
-              <div className="bg-zinc-900 rounded-3xl p-5 shadow-2xl border border-zinc-800 flex items-center gap-4 hover:border-[#FE2C55]/50 transition-colors">
+              <div className="bg-zinc-900 rounded-3xl p-5 shadow-2xl border border-zinc-800 flex items-center gap-4 hover:border-[#FE2C55]/50 transition-colors" data-aos="fade-right">
                 <div className="bg-[#FE2C55]/20 p-4 rounded-2xl text-[#FE2C55] shrink-0 border border-[#FE2C55]/20">
                   <CheckCircle2 className="w-8 h-8" />
                 </div>
@@ -575,7 +561,7 @@ export default function App() {
                 </div>
               </div>
 
-              <div className="bg-zinc-900 rounded-3xl p-5 shadow-2xl border border-zinc-800 flex items-center gap-4 hover:border-[#25F4EE]/50 transition-colors">
+              <div className="bg-zinc-900 rounded-3xl p-5 shadow-2xl border border-zinc-800 flex items-center gap-4 hover:border-[#25F4EE]/50 transition-colors" data-aos="fade-left">
                 <div className="bg-[#25F4EE]/20 p-4 rounded-2xl text-[#25F4EE] shrink-0 border border-[#25F4EE]/20">
                   <CheckCircle2 className="w-8 h-8" />
                 </div>
@@ -585,7 +571,7 @@ export default function App() {
                 </div>
               </div>
 
-              <div className="bg-zinc-900 rounded-3xl p-5 shadow-2xl border border-zinc-800 flex items-center gap-4 hover:border-[#FE2C55]/50 transition-colors">
+              <div className="bg-zinc-900 rounded-3xl p-5 shadow-2xl border border-zinc-800 flex items-center gap-4 hover:border-[#FE2C55]/50 transition-colors" data-aos="fade-right">
                 <div className="bg-[#FE2C55]/20 p-4 rounded-2xl text-[#FE2C55] shrink-0 border border-[#FE2C55]/20">
                   <CheckCircle2 className="w-8 h-8" />
                 </div>
@@ -595,7 +581,7 @@ export default function App() {
                 </div>
               </div>
 
-              <div className="bg-zinc-900 rounded-3xl p-5 shadow-2xl border border-zinc-800 flex items-center gap-4 hover:border-[#25F4EE]/50 transition-colors">
+              <div className="bg-zinc-900 rounded-3xl p-5 shadow-2xl border border-zinc-800 flex items-center gap-4 hover:border-[#25F4EE]/50 transition-colors" data-aos="fade-left">
                 <div className="bg-[#25F4EE]/20 p-4 rounded-2xl text-[#25F4EE] shrink-0 border border-[#25F4EE]/20">
                   <CheckCircle2 className="w-8 h-8" />
                 </div>
@@ -607,10 +593,10 @@ export default function App() {
             </div>
 
             {/* Amasado Preciso */}
-            <div className="bg-zinc-900 rounded-3xl overflow-hidden shadow-2xl border border-zinc-800">
+            <div className="bg-zinc-900 rounded-3xl overflow-hidden shadow-2xl border border-zinc-800" data-aos="zoom-in">
               <div className="p-6 pb-4">
                 <p className="text-zinc-400 font-medium text-sm leading-tight mb-3 text-center">Se adapta al arco del cuello, soporta eficazmente el cuello para mantener una buena postura</p>
-                <h3 className="text-3xl font-display font-black tracking-tight text-white text-center">Amasado preciso</h3>
+                <h3 className="text-2xl sm:text-3xl font-display font-black tracking-tight text-white text-center">Amasado preciso</h3>
               </div>
               <div className="relative">
                 <img src="https://ae01.alicdn.com/kf/A71d58f9e53fc46e39beba29def3aef82z.jpg" alt="Amasado Preciso" className="w-full object-cover" referrerPolicy="no-referrer" />
@@ -638,11 +624,11 @@ export default function App() {
         </section>
 
         {/* Reseñas Interactivas */}
-        <section className="py-12 bg-slate-950 border-t border-slate-900">
+        <section className="py-12 bg-slate-950 border-t border-slate-900" data-aos="fade-up">
           <div className="max-w-md mx-auto">
             <div className="px-4 mb-6 flex items-center justify-between">
               <div>
-                <h3 className="text-2xl font-display font-black text-white">Lo que dicen<br/>nuestros clientes</h3>
+                <h3 className="text-xl sm:text-2xl font-display font-black text-white">Lo que dicen<br/>nuestros clientes</h3>
                 <div className="flex items-center gap-1 mt-2">
                   {[...Array(5)].map((_, i) => (
                     <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
@@ -717,9 +703,38 @@ export default function App() {
           </div>
         </section>
 
+        {/* Price & Urgency */}
+        <section className="p-4 sm:p-6 bg-zinc-950" data-aos="fade-up">
+          <div className="flex items-end gap-2 sm:gap-3 mb-4">
+            <span className="text-4xl sm:text-5xl font-display font-black text-[#25F4EE] tracking-tighter drop-shadow-[0_0_15px_rgba(37,244,238,0.3)]">S/ 109.00</span>
+            <span className="text-lg sm:text-xl text-zinc-500 line-through font-bold mb-1 sm:mb-1.5">S/ 218.00</span>
+            <span className="bg-[#FE2C55]/20 text-[#FE2C55] border border-[#FE2C55]/30 text-xs sm:text-sm font-black px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-md mb-2 sm:mb-2.5 uppercase tracking-wider">
+              -50%
+            </span>
+          </div>
+
+          <div className="mb-5">
+            <div className="flex justify-between text-xs font-bold text-[#FE2C55] mb-1.5 uppercase tracking-wider">
+              <span className="flex items-center gap-1"><Flame className="w-3.5 h-3.5" /> ¡Últimas unidades disponibles!</span>
+              <span>12 en stock</span>
+            </div>
+            <div className="w-full bg-zinc-800 rounded-full h-2.5 overflow-hidden border border-zinc-700">
+              <div className="bg-gradient-to-r from-[#FE2C55] to-[#ff2e5e] h-full rounded-full w-[85%] animate-pulse"></div>
+            </div>
+          </div>
+
+          <div className="bg-zinc-900 rounded-2xl p-4 flex items-center justify-between shadow-lg border border-zinc-800">
+            <div className="flex items-center gap-2 text-white font-bold">
+              <Clock className="w-5 h-5 text-[#FE2C55] animate-pulse" />
+              <span>La oferta termina en:</span>
+            </div>
+            <CountdownTimer />
+          </div>
+        </section>
+
         {/* Order Form */}
-        <form id="order-form" onSubmit={handleSubmit} className="p-6 bg-slate-950">
-          <h2 className="text-3xl font-display font-black text-white mb-6 text-center">Completa tu pedido 📝</h2>
+        <form id="order-form" onSubmit={handleSubmit} className="p-4 sm:p-6 bg-slate-950 pt-2" data-aos="fade-up">
+          <h2 className="text-2xl sm:text-3xl font-display font-black text-white mb-6 text-center">Completa tu pedido 📝</h2>
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-bold text-slate-300 mb-1">Nombre Completo</label>
@@ -730,6 +745,10 @@ export default function App() {
                 placeholder="Ej. Juan Pérez"
                 value={formData.name}
                 onChange={e => setFormData({...formData, name: e.target.value})}
+                minLength={3}
+                maxLength={50}
+                pattern="^[a-zA-ZÀ-ÿ\s]{3,50}$"
+                title="Solo letras y espacios, mínimo 3 caracteres"
               />
             </div>
             <div>
@@ -740,11 +759,15 @@ export default function App() {
                 className="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-shadow"
                 placeholder="Ej. 987654321"
                 value={formData.phone}
-                onChange={e => setFormData({...formData, phone: e.target.value})}
+                onChange={e => setFormData({...formData, phone: e.target.value.replace(/\D/g, '')})}
+                minLength={9}
+                maxLength={9}
+                pattern="^9[0-9]{8}$"
+                title="El número debe empezar con 9 y tener exactamente 9 dígitos"
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-bold text-slate-300 mb-1">Ciudad</label>
                 <input 
@@ -754,6 +777,8 @@ export default function App() {
                   placeholder="Ej. Lima"
                   value={formData.city}
                   onChange={e => setFormData({...formData, city: e.target.value})}
+                  minLength={2}
+                  maxLength={50}
                 />
               </div>
               <div>
@@ -765,6 +790,8 @@ export default function App() {
                   placeholder="Ej. Miraflores"
                   value={formData.district}
                   onChange={e => setFormData({...formData, district: e.target.value})}
+                  minLength={2}
+                  maxLength={50}
                 />
               </div>
             </div>
@@ -778,6 +805,8 @@ export default function App() {
                 placeholder="Ej. Av. Larco 123, Dpto 402"
                 value={formData.address}
                 onChange={e => setFormData({...formData, address: e.target.value})}
+                minLength={5}
+                maxLength={100}
               />
             </div>
 
@@ -789,6 +818,7 @@ export default function App() {
                 placeholder="Frente al parque, casa verde"
                 value={formData.reference}
                 onChange={e => setFormData({...formData, reference: e.target.value})}
+                maxLength={100}
               />
             </div>
 
@@ -825,6 +855,13 @@ export default function App() {
               </p>
             </div>
 
+            <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-4 flex items-start gap-3">
+              <Truck className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
+              <p className="text-sm text-amber-100">
+                <strong className="font-bold">Nota para envíos por Shalom:</strong> Se solicitará un adelanto de S/ 10.00 para asegurar el recojo en agencia. El resto lo pagas al recibir.
+              </p>
+            </div>
+
             <button 
               type="submit"
               className="group relative w-full bg-gradient-to-r from-[#FE2C55] to-[#ff2e5e] text-white text-xl font-display font-black py-4 rounded-2xl shadow-[0_4px_20px_rgba(254,44,85,0.5)] hover:shadow-[0_8px_25px_rgba(254,44,85,0.6)] hover:-translate-y-1 active:scale-95 transition-all duration-300 mt-6 uppercase tracking-wide flex items-center justify-center gap-2 overflow-hidden border border-white/20 animate-heartbeat"
@@ -839,13 +876,13 @@ export default function App() {
         </form>
 
         {/* FAQ Section */}
-        <section className="py-12 bg-slate-50 px-4 border-t border-slate-200">
+        <section className="py-12 bg-slate-50 px-4 border-t border-slate-200" data-aos="fade-up">
           <h2 className="text-3xl font-display font-black text-slate-900 mb-8 text-center">Preguntas Frecuentes</h2>
           <div className="space-y-3">
             {[
               {
                 q: "¿Tengo que pagar por adelantado?",
-                a: "¡No! Para tu total seguridad y confianza, pagas el 100% del valor del producto en efectivo o transferencia únicamente cuando lo recibes en la puerta de tu casa."
+                a: "Para la mayoría de envíos pagas el 100% al recibir. Sin embargo, si tu envío a provincia es por agencia Shalom, solicitamos un adelanto de S/ 10.00 para asegurar el recojo del paquete. El resto lo pagas al recibir."
               },
               {
                 q: "¿Cuánto demora el envío?",
@@ -862,11 +899,23 @@ export default function App() {
             ].map((faq, idx) => (
               <div key={idx} className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
                 <button 
-                  onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
+                  onClick={(e) => {
+                    const isOpening = openFaq !== idx;
+                    setOpenFaq(isOpening ? idx : null);
+                    if (isOpening) {
+                      setTimeout(() => {
+                        const element = e.currentTarget.parentElement;
+                        if (element) {
+                          const y = element.getBoundingClientRect().top + window.scrollY - 80;
+                          window.scrollTo({ top: y, behavior: 'smooth' });
+                        }
+                      }, 300);
+                    }
+                  }}
                   className="w-full px-5 py-4 text-left flex justify-between items-center bg-white active:bg-slate-50 transition-colors"
                 >
                   <span className="font-bold text-slate-800 pr-4">{faq.q}</span>
-                  <ChevronDown className={`w-5 h-5 text-slate-400 transition-transform duration-300 shrink-0 ${openFaq === idx ? 'rotate-180' : ''}`} />
+                  <ChevronDown className={`w-5 h-5 text-slate-400 transition-transform duration-300 shrink-0 ${openFaq === idx ? '' : 'rotate-180'}`} />
                 </button>
                 <div 
                   className={`px-5 overflow-hidden transition-all duration-300 ease-in-out ${openFaq === idx ? 'max-h-40 pb-4 opacity-100' : 'max-h-0 opacity-0'}`}
