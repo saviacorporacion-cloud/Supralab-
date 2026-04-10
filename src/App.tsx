@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, FormEvent, UIEvent } from 'react';
 import { motion } from 'motion/react';
-import { Star, CheckCircle2, Truck, ShieldCheck, Clock, ChevronRight, ChevronLeft, MapPin, User, ChevronDown, Flame } from 'lucide-react';
+import { Star, CheckCircle2, Truck, ShieldCheck, Clock, ChevronRight, ChevronLeft, MapPin, User, ChevronDown, Flame, ShoppingBag } from 'lucide-react';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 
@@ -58,95 +58,6 @@ const CountdownTimer = () => {
   );
 };
 
-const FloatingUrgencyIndicator = ({ scrollToForm }: { scrollToForm: () => void }) => {
-  const [stock, setStock] = useState(12);
-  const [viewers, setViewers] = useState(8);
-
-  useEffect(() => {
-    // Decrease stock randomly
-    const stockInterval = setInterval(() => {
-      setStock(prev => {
-        if (prev <= 3) return prev; // Don't go below 3
-        // 30% chance to decrease by 1
-        if (Math.random() > 0.7) {
-          return prev - 1;
-        }
-        return prev;
-      });
-    }, 4000); // Check every 4 seconds
-
-    // Fluctuate viewers
-    const viewersInterval = setInterval(() => {
-      setViewers(prev => {
-        const change = Math.floor(Math.random() * 3) - 1; // -1, 0, or +1
-        const next = prev + change;
-        if (next < 5) return 5;
-        if (next > 15) return 15;
-        return next;
-      });
-    }, 3000); // Check every 3 seconds
-
-    return () => {
-      clearInterval(stockInterval);
-      clearInterval(viewersInterval);
-    };
-  }, []);
-
-  // Calculate progress bar width (assuming max stock was 20)
-  const progressWidth = `${(stock / 20) * 100}%`;
-
-  return (
-    <div className="fixed bottom-6 left-0 right-0 flex justify-center z-50 pointer-events-none md:hidden px-4">
-      <button 
-        onClick={scrollToForm}
-        className="pointer-events-auto group relative w-full max-w-[340px] bg-zinc-950/80 backdrop-blur-xl rounded-2xl p-1 shadow-[0_10px_40px_rgba(254,44,85,0.4)] hover:scale-[1.02] active:scale-95 transition-all duration-300 overflow-hidden border border-[#FE2C55]/40"
-      >
-        {/* Sweeping Shine */}
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out z-20"></div>
-        
-        <div className="relative flex items-center w-full bg-zinc-900/50 rounded-xl p-2.5 gap-3 z-10">
-          {/* Flame Icon Container */}
-          <div className="relative flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-br from-[#FE2C55] to-orange-500 shadow-[0_0_20px_rgba(254,44,85,0.5)] shrink-0">
-            <div className="absolute inset-0 rounded-full animate-ping bg-[#FE2C55] opacity-30"></div>
-            <Flame className="w-6 h-6 text-white animate-pulse" />
-          </div>
-
-          {/* Content */}
-          <div className="flex flex-col flex-1 text-left">
-            <div className="flex items-baseline gap-1">
-              <span className="font-display font-black text-base uppercase text-white tracking-wide drop-shadow-md">
-                ¡SOLO QUEDAN <span className="text-[#FE2C55] text-lg transition-all duration-500">{stock}</span>!
-              </span>
-            </div>
-            
-            {/* Mini Progress Bar */}
-            <div className="w-full h-1.5 bg-zinc-800 rounded-full overflow-hidden mt-1 mb-1 shadow-inner">
-              <div 
-                className="h-full bg-gradient-to-r from-[#FE2C55] to-orange-400 rounded-full relative transition-all duration-1000 ease-out"
-                style={{ width: progressWidth }}
-              >
-                <div className="absolute inset-0 bg-white/20 animate-pulse"></div>
-              </div>
-            </div>
-            
-            <span className="text-[10px] text-zinc-300 font-medium uppercase tracking-wider flex items-center gap-1.5">
-              <span className="relative flex h-1.5 w-1.5">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
-              </span>
-              {viewers} personas comprando
-            </span>
-          </div>
-
-          {/* Action Arrow */}
-          <div className="flex items-center justify-center w-8 h-8 rounded-full bg-white/5 text-white shrink-0 border border-white/10 group-hover:bg-[#FE2C55] group-hover:border-[#FE2C55] transition-all duration-300">
-            <ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
-          </div>
-        </div>
-      </button>
-    </div>
-  );
-};
 
 export default function App() {
   const [currentImg, setCurrentImg] = useState(0);
@@ -172,6 +83,36 @@ export default function App() {
   });
 
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [showFloatingCTA, setShowFloatingCTA] = useState(false);
+  const [stockTimer, setStockTimer] = useState(12);
+
+  useEffect(() => {
+    const handleScrollCTA = () => {
+      const form = document.getElementById('order-form');
+      if (form) {
+        const formRect = form.getBoundingClientRect();
+        // Determine if form is currently visible
+        const isFormInView = formRect.top < window.innerHeight && formRect.bottom > 0;
+        
+        // Show floating CTA only if user scrolled past 300px AND form is not visible
+        setShowFloatingCTA(window.scrollY > 300 && !isFormInView);
+      }
+    };
+    
+    // Use passive listener for better scroll performance
+    window.addEventListener('scroll', handleScrollCTA, { passive: true });
+    handleScrollCTA();
+    
+    // Decrement stock occasionally to keep urgency without spamming re-renders
+    const interval = setInterval(() => {
+      setStockTimer(prev => (prev > 3 && Math.random() > 0.6 ? prev - 1 : prev));
+    }, 15000);
+
+    return () => {
+      window.removeEventListener('scroll', handleScrollCTA);
+      clearInterval(interval);
+    };
+  }, []);
 
   useEffect(() => {
     AOS.init({
@@ -943,8 +884,24 @@ export default function App() {
         </div>
       </footer>
 
-      {/* Floating Urgency Indicator for Mobile */}
-      <FloatingUrgencyIndicator scrollToForm={scrollToForm} />
+      {/* Floating Urgency Indicator for Mobile (Optimizado) */}
+      <div className={`fixed bottom-4 left-0 right-0 z-50 px-4 pointer-events-none md:hidden flex flex-col items-center transition-all duration-500 ease-in-out ${showFloatingCTA ? 'translate-y-0 opacity-100' : 'translate-y-24 opacity-0'}`}>
+        <div className="pointer-events-auto w-full max-w-[340px] flex flex-col items-center gap-1.5 shadow-2xl">
+          {/* Stock Notification */}
+          <div className="bg-red-600 text-white text-[10px] font-black px-4 py-1 rounded-full shadow-lg flex items-center gap-2 border border-red-400/30 animate-pulse">
+            <Flame className="w-3.5 h-3.5 fill-white" /> 
+            <span>¡ÚLTIMAS <span className="text-yellow-300 font-black">{stockTimer}</span> UNIDADES EN STOCK!</span>
+          </div>
+          {/* Main CTA Button */}
+          <button 
+            onClick={scrollToForm} 
+            className="w-full bg-[#22c55e] hover:bg-[#16a34a] text-white font-black py-4 rounded-3xl shadow-[0_10px_30px_rgba(34,197,94,0.4)] transition-all flex justify-center items-center gap-3 text-lg uppercase tracking-wider active:scale-95 border-2 border-white/20"
+          >
+            <ShoppingBag className="w-6 h-6" />
+            COMPRAR AHORA
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
