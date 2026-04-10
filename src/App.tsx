@@ -855,12 +855,7 @@ export default function App() {
               </p>
             </div>
 
-            <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-4 flex items-start gap-3">
-              <Truck className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
-              <p className="text-sm text-amber-100">
-                <strong className="font-bold">Nota para envíos por Shalom:</strong> Se solicitará un adelanto de S/ 10.00 para asegurar el recojo en agencia. El resto lo pagas al recibir.
-              </p>
-            </div>
+
 
             <button 
               type="submit"
@@ -882,7 +877,7 @@ export default function App() {
             {[
               {
                 q: "¿Tengo que pagar por adelantado?",
-                a: "Para la mayoría de envíos pagas el 100% al recibir. Sin embargo, si tu envío a provincia es por agencia Shalom, solicitamos un adelanto de S/ 10.00 para asegurar el recojo del paquete. El resto lo pagas al recibir."
+                a: "Para la gran mayoría de envíos pagas el 100% al recibir tu producto en casa. El envío contraentrega es un método 100% seguro."
               },
               {
                 q: "¿Cuánto demora el envío?",
